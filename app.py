@@ -1,10 +1,8 @@
 import streamlit as st
-import requests
 from streamlit_option_menu import option_menu
 from unidecode import unidecode
 import datetime
-import re
-from functions import extract_functions, transform_functions, data_viz
+from functions import extract_functions, transform_functions, data_viz, load_data_database
 import sqlite3
 
 
@@ -30,6 +28,14 @@ def display_people(conn):
     for row in rows:
         st.write(f"ID: {row[0]}, Nome: {row[1]}")
 
+def display_cities(conn):
+    cursor = conn.execute("SELECT * FROM cidades")
+    rows = cursor.fetchall()
+    st.write("Cidades cadastradas:")
+    for row in rows:
+        st.write(f"ID: {row[0]}, Nome: {row[1]}, Latitude: {row[2]}, Longitude: {row[3]}")
+
+
 # Configurações do Menu
 with st.sidebar:
     st.image('Imagens/logo.png', width=100)
@@ -40,10 +46,8 @@ with st.sidebar:
 
 
 def main():
+    # Conecta com banco de dados
     conn = create_connection("zebrinha_azul.db")
-
-    display_people(conn)
-
 
     # Pagina Sobre
     if selected == 'Sobre':
@@ -66,10 +70,10 @@ def main():
             NOME = st.text_input("**Digite seu nome:**", placeholder="Digite aqui seu nome sem números ou caracteres especiais")
 
             ENDERECO_ORIGEM_INPUT =st.text_input("**Digite o nome da cidade e a sigla do estado onde está:**", 
-                                         placeholder="Digite aqui o nome da cidade sem números ou caracteres especiais")
+                                         placeholder="EXEMPLO: São Paulo SP obs:(sem caracteres especiais ou números)")
              
             ENDERECO_DESTINO_INPUT =st.text_input("**Digite o nome da cidade a sigla do estado onde quer ir:**", 
-                                          placeholder="Digite aqui o nome da cidade sem números ou caracteres especiais")
+                                          placeholder="EXEMPLO: Rio de Janeiro RJ obs:(sem caracteres especiais ou números)")
              
             submit_button = st.form_submit_button(label='Enviar')
 
@@ -108,7 +112,8 @@ def main():
                 st.success("Obrigado por fornecer informações válidas!")
 
                 # Optem data atual para inserir posteriormente no banco de dados.
-                DATA_ATUAL = datetime.datetime.now().strftime("%d/%m/%Y")
+                DATA_ATUAL = datetime.datetime.now().strftime("%Y-%m-%d")            
+
 
             # Extração e transformação dados de trânsito 
             transito_data_bronze = extract_functions.extracao_dados_de_trafico(ENDERECO_ORIGEM_INPUT, ENDERECO_DESTINO_INPUT)
@@ -140,14 +145,35 @@ def main():
                 st.info(f'**Sensação Térmica Origem:** {SENSACAO_TERMICA_ORIGEM} ºC')
                 st.info(f'**Sensação Térmica Destino:** {SENSACAO_TERMICA_DESTINO} ºC')
 
-            try:
-                cursor = conn.cursor()
-                cursor.execute("INSERT INTO pessoas (name) VALUES (?)", (NOME,))
-                conn.commit()
-                st.success("Registro inserido com sucesso!")
-                display_people(conn)
-            except sqlite3.Error as e:
-                st.error(e)
+            
+            # CARREGANDO DADOS NO BANCO DE DADOS
+
+            # Tabela pessoas
+            load_data_database.insert_pessoas(conn, NOME)       
+     
+            # Tabela cidades
+            load_data_database.insert_city(conn, ENDERECO_ORIGEM, LATITUDE_ORIGEM, LONGITUDE_ORIGEM)
+            load_data_database.insert_city(conn, ENDERECO_DESTINO, LATITUDE_DESTINO, LONGITUDE_DESTINO)
+
+            # Tabela Clima
+            load_data_database.insert_clima(conn, CONDICAO_CLIMATICA_ORIGEM)
+            load_data_database.insert_clima(conn, CONDICAO_CLIMATICA_DESTINO)
+
+            # Tabela viagem
+            load_data_database.insert_viagem(conn, NOME, DATA_ATUAL, ENDERECO_ORIGEM, ENDERECO_DESTINO, DISTANCIA, TEMPO)
+
+            # Tabela historico climatico
+            load_data_database.insert_historico_clima(conn, DATA_ATUAL,ENDERECO_ORIGEM, CONDICAO_CLIMATICA_ORIGEM, TEMPERATURA_ORIGEM, SENSACAO_TERMICA_ORIGEM)
+            load_data_database.insert_historico_clima(conn, DATA_ATUAL,ENDERECO_DESTINO, CONDICAO_CLIMATICA_DESTINO, TEMPERATURA_DESTINO, SENSACAO_TERMICA_DESTINO)
+
+
+
+            
+
+      
+
+                
+                
     
             
             

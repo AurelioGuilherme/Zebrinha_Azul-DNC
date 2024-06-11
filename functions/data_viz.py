@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 
+
 # Função para decodificar a polyline
 def decode_polyline(polyline_str):
     index, lat, lng, coordinates = 0, 0, 0, []
