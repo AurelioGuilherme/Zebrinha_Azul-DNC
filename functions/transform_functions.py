@@ -1,3 +1,6 @@
+import re
+from unidecode import unidecode
+
 def transformacao_dados_climaticos(data):
     # Extração da decrição da condição climatica
     CONDICAO_CLIMATICA = data['weather'][0]['description']
@@ -27,3 +30,14 @@ def transformacao_dados_transito(data):
     LATITUDE_DESTINO, LONGITUDE_DESTINO = data['routes'][0]['legs'][0]['end_location'].values()  
 
     return DISTANCIA, TEMPO, ENDERECO_ORIGEM, ENDERECO_DESTINO, LATITUDE_ORIGEM, LONGITUDE_ORIGEM, LATITUDE_DESTINO, LONGITUDE_DESTINO
+
+# Função para verificar se o texto é válido
+def texto_valido(texto):
+    # Regex para verificar se o texto contém apenas letras e espaços
+    return bool(re.match("^[A-Za-zÀ-ÿà-ÿ ]+$", texto))
+
+# Função para converter o texto
+def converter_texto(texto):
+    texto_sem_acento = unidecode(texto)
+    texto_maiusculo = texto_sem_acento.upper()
+    return texto_maiusculo

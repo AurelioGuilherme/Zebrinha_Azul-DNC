@@ -5,29 +5,32 @@ from unidecode import unidecode
 import datetime
 import re
 from functions import extract_functions, transform_functions, data_viz
-import folium
-from streamlit_folium import st_folium
+import sqlite3
 
 
-# Função para verificar se o texto é válido
-def texto_valido(texto):
-    # Regex para verificar se o texto contém apenas letras e espaços
-    return bool(re.match("^[A-Za-zÀ-ÿà-ÿ ]+$", texto))
-
-# Função para converter o texto
-def converter_texto(texto):
-    texto_sem_acento = unidecode(texto)
-    texto_maiusculo = texto_sem_acento.upper()
-    return texto_maiusculo
-
-
+# Opções do menu
 MENU_LIST = ['Sobre',
              'Modelagem de Banco de dados',
              'Extração via API',
              'Transformação de dados',
              'Carregamento no Bando de Dados']
 
+def create_connection(db_file):
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    except sqlite3.Error as e:
+        st.error(e)
 
+def display_people(conn):
+    cursor = conn.execute("SELECT * FROM pessoas")
+    rows = cursor.fetchall()
+    st.write("Registros na tabela pessoas:")
+    for row in rows:
+        st.write(f"ID: {row[0]}, Nome: {row[1]}")
+
+# Configurações do Menu
 with st.sidebar:
     st.image('Imagens/logo.png', width=100)
     st.sidebar.title('Zebrinha Azul - Case DNC')
@@ -37,9 +40,15 @@ with st.sidebar:
 
 
 def main():
+    conn = create_connection("zebrinha_azul.db")
+
+    display_people(conn)
+
+
+    # Pagina Sobre
     if selected == 'Sobre':
-        st.write("## **Case Engenheiro de Dados Jr. - DNC**")
-        st.write("### **Aurélio Guilherme**")
+        st.header("Case Engenheiro de Dados Jr. - DNC")
+        st.subheader("Aurélio Guilherme")
         st.write()
         st.write('''
                     A **Zebrinha Azul** é uma startup inovadora que se destaca no mercado por sua expertise em 
@@ -50,7 +59,9 @@ def main():
                 ''')
         st.write()
 
-        st.write('---')       
+        st.write('---')
+
+        # Inclusão do formulário inicial com os inputs do usuário.
         with st.form(key='formulario_nome'):
             NOME = st.text_input("**Digite seu nome:**", placeholder="Digite aqui seu nome sem números ou caracteres especiais")
 
@@ -65,8 +76,8 @@ def main():
         # Verifica se o botão de envio foi pressionado
         if submit_button:
             if NOME:
-                if texto_valido(NOME):
-                    NOME = converter_texto(NOME)
+                if transform_functions.texto_valido(NOME):
+                    NOME = transform_functions.converter_texto(NOME)
                     
                 else:
                     st.error("Erro: Nome inválido. Por favor, insira um nome que contenha apenas letras e espaços.")
@@ -74,8 +85,8 @@ def main():
                 st.error("Erro: Por favor, digite um nome.")
 
             if ENDERECO_ORIGEM_INPUT:
-                if texto_valido(ENDERECO_ORIGEM_INPUT):
-                    ENDERECO_ORIGEM_INPUT = converter_texto(ENDERECO_ORIGEM_INPUT)
+                if transform_functions.texto_valido(ENDERECO_ORIGEM_INPUT):
+                    ENDERECO_ORIGEM_INPUT = transform_functions.converter_texto(ENDERECO_ORIGEM_INPUT)
                     
                     
                 else:
@@ -84,8 +95,8 @@ def main():
                 st.error("Erro: Por favor, digite o endereço de origem.")
 
             if ENDERECO_DESTINO_INPUT:
-                if texto_valido(ENDERECO_DESTINO_INPUT):
-                    ENDERECO_DESTINO_INPUT = converter_texto(ENDERECO_DESTINO_INPUT)
+                if transform_functions.texto_valido(ENDERECO_DESTINO_INPUT):
+                    ENDERECO_DESTINO_INPUT = transform_functions.converter_texto(ENDERECO_DESTINO_INPUT)
                     
                 else:
                     st.error("Erro: Endereço de destino inválido. Por favor, insira um endereço que contenha apenas letras e espaços.")
@@ -93,15 +104,16 @@ def main():
                 st.error("Erro: Por favor, digite o endereço de destino.")
 
             # Mensagem de sucesso se tudo estiver válido
-            if texto_valido(NOME) and texto_valido(ENDERECO_ORIGEM_INPUT) and texto_valido(ENDERECO_DESTINO_INPUT):
+            if transform_functions.texto_valido(NOME) and transform_functions.texto_valido(ENDERECO_ORIGEM_INPUT) and transform_functions.texto_valido(ENDERECO_DESTINO_INPUT):
                 st.success("Obrigado por fornecer informações válidas!")
+
+                # Optem data atual para inserir posteriormente no banco de dados.
                 DATA_ATUAL = datetime.datetime.now().strftime("%d/%m/%Y")
 
-            # Extração dados de trânsito
+            # Extração e transformação dados de trânsito 
             transito_data_bronze = extract_functions.extracao_dados_de_trafico(ENDERECO_ORIGEM_INPUT, ENDERECO_DESTINO_INPUT)
             DISTANCIA, TEMPO, ENDERECO_ORIGEM, ENDERECO_DESTINO, LATITUDE_ORIGEM, LONGITUDE_ORIGEM, LATITUDE_DESTINO, LONGITUDE_DESTINO = transform_functions.transformacao_dados_transito(transito_data_bronze)
            
-
             # Extração dados climáticos
             cidade_origem_weather_data_bronze = extract_functions.extracao_dados_climaticos(LATITUDE_ORIGEM, LONGITUDE_ORIGEM)
             cidade_destino_weather_data_bronze = extract_functions.extracao_dados_climaticos(LATITUDE_DESTINO, LONGITUDE_DESTINO)
@@ -110,11 +122,13 @@ def main():
             CONDICAO_CLIMATICA_ORIGEM, TEMPERATURA_ORIGEM, SENSACAO_TERMICA_ORIGEM = transform_functions.transformacao_dados_climaticos(cidade_origem_weather_data_bronze)
             CONDICAO_CLIMATICA_DESTINO, TEMPERATURA_DESTINO, SENSACAO_TERMICA_DESTINO = transform_functions.transformacao_dados_climaticos(cidade_destino_weather_data_bronze)
 
+            # Plotagem de rota
             st.write('## **SUA ROTA**')
             st.write(f'Sua rota iniciasse em {ENDERECO_ORIGEM} com destino à/ao {ENDERECO_DESTINO}')             
             fig = data_viz.plotar_rota(transito_data_bronze)
             st.plotly_chart(fig)
 
+            # Mostrando informações obtidas nas API's
             with st.expander('Temperatura'):
                 st.info(f'**Temperatura - Origem:** {TEMPERATURA_ORIGEM} ºC')
                 st.info(f'**Temperatura - Destino:** {TEMPERATURA_DESTINO} ºC')
@@ -125,6 +139,15 @@ def main():
             with st.expander('Sensação Térmica'):
                 st.info(f'**Sensação Térmica Origem:** {SENSACAO_TERMICA_ORIGEM} ºC')
                 st.info(f'**Sensação Térmica Destino:** {SENSACAO_TERMICA_ORIGEM} ºC')
+
+            try:
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO pessoas (name) VALUES (?)", (NOME,))
+                conn.commit()
+                st.success("Registro inserido com sucesso!")
+                display_people(conn)
+            except sqlite3.Error as e:
+                st.error(e)
     
             
             

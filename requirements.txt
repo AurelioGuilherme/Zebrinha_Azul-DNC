@@ -3,7 +3,4 @@ requests == 2.32.3
 streamlit == 1.35.0
 streamlit_option_menu
 unidecode
-folium
-streamlit_folium
-pydeck
 plotly
