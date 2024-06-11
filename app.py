@@ -138,7 +138,7 @@ def main():
                 st.info(f'**Condição Climática - Destino:** {CONDICAO_CLIMATICA_DESTINO}')
             with st.expander('Sensação Térmica'):
                 st.info(f'**Sensação Térmica Origem:** {SENSACAO_TERMICA_ORIGEM} ºC')
-                st.info(f'**Sensação Térmica Destino:** {SENSACAO_TERMICA_ORIGEM} ºC')
+                st.info(f'**Sensação Térmica Destino:** {SENSACAO_TERMICA_DESTINO} ºC')
 
             try:
                 cursor = conn.cursor()
