@@ -1,8 +1,8 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from unidecode import unidecode
 import datetime
 from functions import extract_functions, transform_functions, data_viz, load_data_database
+from functions import modelagem_de_banco_de_dados
 import sqlite3
 
 
@@ -169,24 +169,14 @@ def main():
 
 
             
-
-      
-
-                
-                
-    
-            
-            
-
-
-
-    
+ 
 
             
 
     elif selected == 'Modelagem de Banco de dados':
         st.title('Modelagem de Banco de dados')
         st.write('---')
+        modelagem_de_banco_de_dados.view()
 
         
 
