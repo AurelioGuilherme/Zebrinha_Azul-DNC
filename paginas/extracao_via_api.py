@@ -17,19 +17,21 @@ def view():
 
              ''')
     st.write('---')
-    st.write(''' **`extracao_dados_climaticos`**
+    st.write(''' 
+             **`extracao_dados_climaticos(lat, lon):`**
              
-             A função extrai dados climáticos para uma dada latitude e longitude utilizando a API do OpenWeatherMap.''')
+             A função extrai dados climáticos para uma dada latitude e longitude utilizando a API do OpenWeatherMap.
+             ''')
     
     st.write('[Documentação da API](https://openweathermap.org/api)')
-
-    st.code('''
-            CHAVE = '123456789' # Estou incluindo uma chave diferente por motivos de segurança.
-            def extracao_dados_climaticos(lat, lon):
-                URL_CLIMA = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={CHAVE}'
-                r = requests.get(URL_CLIMA).json()
-                return r
-            ''', language='python')
+    with st.expander('**Exibir código:**'):
+        st.code('''
+                CHAVE = '123456789' # Estou incluindo uma chave diferente por motivos de segurança.
+                def extracao_dados_climaticos(lat, lon):
+                    URL_CLIMA = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={CHAVE}'
+                    r = requests.get(URL_CLIMA).json()
+                    return r
+                ''', language='python')
     
     st.write('''
              **Parâmetros:**
@@ -43,26 +45,27 @@ def view():
     st.write('---')
 
     st.write('''
-             **`extracao_dados_de_trafico`**
+             **`extracao_dados_de_trafico(cidade_origem, cidade_destino):`**
              
             A função extrai dados de tráfego entre duas cidades utilizando a API do Google Maps Directions.''')
     
     st.write('[Documentação da API](https://developers.google.com/maps/documentation/directions/overview)')
 
-    st.code('''
-            
-            CHAVE = 123456789 # Estou incluindo uma chave diferente por motivos de segurança.
-            def extracao_dados_de_trafico(cidade_origem, cidade_destino):
-                URL_TRANSITO = f"https://maps.googleapis.com/maps/api/directions/json?origin={cidade_origem}&destination={cidade_destino}&key={CHAVE}"
-                r = requests.get(URL_TRANSITO)
+    with st.expander('**Exibir código:**'):
+        st.code('''
 
-                if r.status_code == 200:
-                    data = r.json()
-                    if data['status'] == 'OK':
-                        return data
-                    else:
-                        st.error(f"Erro na resposta da API: {data['status']}")
-            ''')
+                CHAVE = 123456789 # Estou incluindo uma chave diferente por motivos de segurança.
+                def extracao_dados_de_trafico(cidade_origem, cidade_destino):
+                    URL_TRANSITO = f"https://maps.googleapis.com/maps/api/directions/json?origin={cidade_origem}&destination={cidade_destino}&key={CHAVE}"
+                    r = requests.get(URL_TRANSITO)
+
+                    if r.status_code == 200:
+                        data = r.json()
+                        if data['status'] == 'OK':
+                            return data
+                        else:
+                            st.error(f"Erro na resposta da API: {data['status']}")
+                ''')
     st.write('''
              **Parâmetros:**
 
