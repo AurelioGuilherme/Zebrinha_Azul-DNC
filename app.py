@@ -37,18 +37,38 @@ def main():
     if selected == 'Sobre':
         sobre.view(conn)
 
-        st.write('''
-                    **Melhorias planejas**
-                 
-                 - Incluir gráficos de barras das 10 cidades mais visitadas
-                 - Melhoria na disposição visual das informações de destino e origem
-                 - Adicionar gráficos relacionadas ao tempo de viagem e distancia
-                 - Incluir a possibilidade de filtrar por estado
-                 - Melhoria nas transformações dos dados (tradução de condição climatica, separação do nome da cidade,estado e páis.)
-                 - Incluir Box para poder efetuar consultas SQL, dando opção de baixar o resultado em csv ou xlsx.
-                                  
+        query = st.text_area("**Digite sua consulta SQL aqui:**")
+        with st.expander('**Nome das tabelas**'):
+            st.write('''
+                        - pessoas
+                        - cidades
+                        - clima
+                        - viagem
+                        - historico_clima
                 ''')
-        
+        if st.button("Executar"):
+            if query.strip():
+                result = sobre.run_query(query)
+                if result is not None:
+                    st.write("Resultado da consulta:")
+                    st.dataframe(result)
+            else:
+                st.warning("Por favor, insira uma consulta SQL.")
+
+
+        with st.expander('**Melhorias planejas**'):
+            st.write('''
+
+
+                     - Incluir gráficos de barras das 10 cidades mais visitadas
+                     - Melhoria na disposição visual das informações de destino e origem
+                     - Adicionar gráficos relacionadas ao tempo de viagem e distancia
+                     - Incluir a possibilidade de filtrar por estado
+                     - Melhoria nas transformações dos dados (tradução de condição climatica, separação do nome da cidade,estado e páis.)
+                     - Incluir Box para poder efetuar consultas SQL, dando opção de baixar o resultado em csv ou xlsx.
+
+                    ''')
+
 
     elif selected == 'Modelagem de Banco de dados':
         st.title('Modelagem de Banco de dados')

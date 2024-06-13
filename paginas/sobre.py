@@ -1,6 +1,8 @@
 import streamlit as st
 import datetime
-from functions import extract_functions, transform_functions, data_viz, load_data_database    
+from functions import extract_functions, transform_functions, data_viz, load_data_database   
+import sqlite3 
+import pandas as pd
     
 
 def view(conn):
@@ -118,4 +120,26 @@ def view(conn):
             # Tabela historico climatico
             load_data_database.insert_historico_clima(conn, DATA_ATUAL,ENDERECO_ORIGEM, CONDICAO_CLIMATICA_ORIGEM, TEMPERATURA_ORIGEM, SENSACAO_TERMICA_ORIGEM)
             load_data_database.insert_historico_clima(conn, DATA_ATUAL,ENDERECO_DESTINO, CONDICAO_CLIMATICA_DESTINO, TEMPERATURA_DESTINO, SENSACAO_TERMICA_DESTINO)
+
+            #query = st.text_input('**Digite a sua query SQL**')
+            #try:
+            #     if query:
+            #         cursor = conn.cursor()
+            #         resultado_query = cursor.execute(query)
+            #         st.write(resultado_query.fetchone())
+            #     else:
+            #         st.write('Digite sua consulta')
+            #except sqlite3.Error as e:
+            #      pass
+def run_query(query):
+    conn = sqlite3.connect('zebrinha_azul.db')
+    try:
+        df = pd.read_sql_query(query, conn)
+        return df
+    except Exception as e:
+        st.error(f"Erro ao executar a query: {e}")
+    finally:
+        conn.close()
+
+
             
