@@ -21,8 +21,13 @@ def view(conn):
         st.write('---')
 
         st.subheader('Formulário')
-        st.write('Ao preencher o formulário, você receberá a rota e informações climáticas atuais de onde esta e de seu destino.')
-        st.write('Estas informções ficarão salvas no banco de dados, onde futuramente poderá extrair informações sobre o seu histórico de viagens.')
+        st.write('''
+                    Ao preencher o formulário, você receberá a rota e as informações climáticas atuais de onde está e do seu destino.
+
+                    Essas informações ficarão salvas no banco de dados, permitindo que você extraia informações sobre o seu histórico 
+                    de viagens futuramente.
+                 ''')
+  
 
         # Inclusão do formulário inicial com os inputs do usuário.
         with st.form(key='formulario_nome'):
