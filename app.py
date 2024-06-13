@@ -3,7 +3,6 @@ from streamlit_option_menu import option_menu
 from paginas import modelagem_de_banco_de_dados, extracao_via_api, sobre, transformacao_de_dados, carregamento_no_banco_de_dados
 import sqlite3
 
-
 # Opções do menu
 MENU_LIST = ['Sobre',
              'Modelagem de Banco de dados',
@@ -36,8 +35,9 @@ def main():
     # Pagina Sobre
     if selected == 'Sobre':
         sobre.view(conn)
+        st.write('---')
 
-        query = st.text_area("**Digite sua consulta SQL aqui:**")
+        st.subheader('Consultas SQL')
         with st.expander('**Nome das tabelas**'):
             st.write('''
                         - pessoas
@@ -46,6 +46,8 @@ def main():
                         - viagem
                         - historico_clima
                 ''')
+            
+        query = st.text_area("**Digite sua consulta SQL aqui:**")
         if st.button("Executar"):
             if query.strip():
                 result = sobre.run_query(query)

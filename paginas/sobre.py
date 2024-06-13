@@ -20,6 +20,10 @@ def view(conn):
 
         st.write('---')
 
+        st.subheader('Formulário')
+        st.write('Ao preencher o formulário, você receberá a rota e informações climáticas atuais de onde esta e de seu destino.')
+        st.write('Estas informções ficarão salvas no banco de dados, onde futuramente poderá extrair informações sobre o seu histórico de viagens.')
+
         # Inclusão do formulário inicial com os inputs do usuário.
         with st.form(key='formulario_nome'):
             NOME = st.text_input("**Digite seu nome:**", placeholder="Digite aqui seu nome sem números ou caracteres especiais")
@@ -121,16 +125,6 @@ def view(conn):
             load_data_database.insert_historico_clima(conn, DATA_ATUAL,ENDERECO_ORIGEM, CONDICAO_CLIMATICA_ORIGEM, TEMPERATURA_ORIGEM, SENSACAO_TERMICA_ORIGEM)
             load_data_database.insert_historico_clima(conn, DATA_ATUAL,ENDERECO_DESTINO, CONDICAO_CLIMATICA_DESTINO, TEMPERATURA_DESTINO, SENSACAO_TERMICA_DESTINO)
 
-            #query = st.text_input('**Digite a sua query SQL**')
-            #try:
-            #     if query:
-            #         cursor = conn.cursor()
-            #         resultado_query = cursor.execute(query)
-            #         st.write(resultado_query.fetchone())
-            #     else:
-            #         st.write('Digite sua consulta')
-            #except sqlite3.Error as e:
-            #      pass
 def run_query(query):
     conn = sqlite3.connect('zebrinha_azul.db')
     try:
