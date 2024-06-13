@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from paginas import modelagem_de_banco_de_dados, extracao_via_api, sobre
+from paginas import modelagem_de_banco_de_dados, extracao_via_api, sobre, transformacao_de_dados
 import sqlite3
 
 
@@ -68,10 +68,8 @@ def main():
 
     elif selected == 'Transformação de dados':
         st.title('Transformação de dados')
-        st.write('---')
-        sobre.view(conn)
-        st.write('# Em construção 😢 ')
-        st.write('Nesta página irei incluir os detalhes das transformações após obter os dados..')
+        st.write('---')        
+        transformacao_de_dados.view()
         
      
 
