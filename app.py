@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from paginas import modelagem_de_banco_de_dados, extracao_via_api, sobre, transformacao_de_dados
+from paginas import modelagem_de_banco_de_dados, extracao_via_api, sobre, transformacao_de_dados, carregamento_no_banco_de_dados
 import sqlite3
 
 
@@ -76,17 +76,11 @@ def main():
     elif selected == 'Carregamento no Bando de Dados':
         st.title('Carregamento no Bando de Dados')
         st.write('---')
-        sobre.view(conn)
-
-        st.write('# Em construção 😢 ')
-        st.write('Nesta página irei incluir os detalhes do carregamento no banco de dados.')
+        carregamento_no_banco_de_dados.view()
+   
 
         
 
-
-
-
-#st.write('https://dncgroupbr.notion.site/Engenheiro-de-Dados-d60059a87c874e479390d273b420f063')
 
 if __name__ == '__main__':
     main()
