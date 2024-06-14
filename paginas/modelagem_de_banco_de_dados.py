@@ -10,7 +10,7 @@ def view():
                
             ''')
     st.subheader('Estrutura das Tabelas')
-    st.image('Imagens/Diagrama.png')
+    st.image('Imagens/Diagrama.png', use_column_width=True)
 
     st.write('''
              **Tabela Pessoas:**            
