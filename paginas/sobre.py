@@ -6,8 +6,7 @@ import pandas as pd
     
 
 def view(conn):
-        st.header("Case Engenheiro de Dados Jr. - DNC")
-        st.subheader("Aurélio Guilherme")
+        st.header("Projeto ETL - Zebrinha Azul")
         st.write()
         st.write('''
                     A **Zebrinha Azul** é uma startup inovadora que se destaca no mercado por sua expertise em 

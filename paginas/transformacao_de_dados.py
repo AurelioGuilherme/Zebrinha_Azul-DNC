@@ -156,10 +156,3 @@ def view():
              Outra deficiência seria em questão do nome do usuário ser a única informação preenchida para diferenciar o usuário, a forma 
              mais "correta" seria utilizar informações como o CPF para distinguir cada usuário além da obtenção de mais dados.
             ''')
-    with st.expander('**E por que não fiz assim?**'):
-        st.write('Porque a aplicação funciona sem elas.')
-    with st.expander('Brindeirinha😂'):
-        st.write('''
-                        Devido a minha disponibilidade atual de tempo, optei por tornar a aplicação menos complexa, focando menos tempo na transformação de dados
-                      e focalizando na modelagem dos bancos de dados e na distribuição pelo `Streamlit`. 💖  
-                     ''')

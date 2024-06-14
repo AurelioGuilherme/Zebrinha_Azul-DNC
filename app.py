@@ -20,8 +20,8 @@ def create_connection(db_file):
 
 # Configurações do Menu
 with st.sidebar:
-    st.image('Imagens/logo.png', width=100)
-    st.sidebar.title('Zebrinha Azul - Case DNC')
+    st.image('Imagens/logo.jpeg', use_column_width =True)
+    st.sidebar.title('Zebrinha Azul - ETL')
     selected = option_menu("",MENU_LIST, default_index=0)
 
 
@@ -58,18 +58,18 @@ def main():
                 st.warning("Por favor, insira uma consulta SQL.")
 
 
-        with st.expander('**Melhorias planejas**'):
-            st.write('''
-
-
-                     - Incluir gráficos de barras das 10 cidades mais visitadas
-                     - Melhoria na disposição visual das informações de destino e origem
-                     - Adicionar gráficos relacionadas ao tempo de viagem e distancia
-                     - Incluir a possibilidade de filtrar por estado
-                     - Melhoria nas transformações dos dados (tradução de condição climatica, separação do nome da cidade,estado e páis.)
-                     - Incluir Box para poder efetuar consultas SQL, dando opção de baixar o resultado em csv ou xlsx.
-
-                    ''')
+        #with st.expander('**Melhorias planejas**'):
+        #    st.write('''
+#
+#
+        #             - Incluir gráficos de barras das 10 cidades mais visitadas
+        #             - Melhoria na disposição visual das informações de destino e origem
+        #             - Adicionar gráficos relacionadas ao tempo de viagem e distancia
+        #             - Incluir a possibilidade de filtrar por estado
+        #             - Melhoria nas transformações dos dados (tradução de condição climatica, separação do nome da cidade,estado e páis.)
+        #             - Incluir Box para poder efetuar consultas SQL, dando opção de baixar o resultado em csv ou xlsx.
+#
+        #            ''')
 
 
     elif selected == 'Modelagem de Banco de dados':
