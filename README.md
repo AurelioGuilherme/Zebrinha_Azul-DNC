@@ -3,7 +3,7 @@
 
 
 ## Como Usar
-Você pode acessar a aplicação diretamente no link hospedado no [Streamlit](https://zebrinha-azul.streamlit.app/)
+Você pode acessar a aplicação diretamente no link hospedado no [Streamlit](https://zebrinha-azul-etl.streamlit.app/)
 
 
 **Para a execução loacalmente**
